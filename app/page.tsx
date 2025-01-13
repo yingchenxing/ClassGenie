@@ -7,8 +7,6 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { Separator } from "@/components/ui/separator"
@@ -19,18 +17,9 @@ import {
 } from "@/components/ui/sidebar"
 import { MicrophoneContextProvider } from "./context/MicrophoneContextProvider"
 import { DeepgramContextProvider } from "./context/DeepgramContextProvider"
-import { useEditor, EditorContent } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
 import MarkdownEditor from "@/components/panel/markdownEditor"
 
 export default function Page() {
-  const editor = useEditor({
-    extensions: [
-      StarterKit,
-    ],
-    content: '<p>Hello World! 🌎️</p>',
-  })
-
   return (
     <SidebarProvider>
       <AppSidebar />

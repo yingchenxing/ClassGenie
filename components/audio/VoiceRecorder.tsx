@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   LiveConnectionState,
   LiveTranscriptionEvent,
@@ -16,14 +16,13 @@ import { Button } from "@/components/ui/button";
 import { Mic, MicOff, Sparkles } from "lucide-react";
 
 const VoiceRecorder: () => JSX.Element = () => {
-  const [caption, setCaption] = useState<string | undefined>("Powered by Deepgram");
   const [transcriptions, setTranscriptions] = useState<{ text: string; timestamp: string }[]>([]);
   const { connection, connectToDeepgram, connectionState } = useDeepgram();
   const { setupMicrophone, microphone, startMicrophone, stopMicrophone, microphoneState } = useMicrophone();
 
   useEffect(() => {
     setupMicrophone();
-  }, []);
+  }, [setupMicrophone]);
 
   useEffect(() => {
     if (microphoneState === MicrophoneState.Ready) {
@@ -35,7 +34,7 @@ const VoiceRecorder: () => JSX.Element = () => {
         utterance_end_ms: 3000,
       });
     }
-  }, [microphoneState]);
+  }, [microphoneState, connectToDeepgram]);
 
   useEffect(() => {
     if (!microphone || !connection) return;
@@ -49,18 +48,15 @@ const VoiceRecorder: () => JSX.Element = () => {
 
     const onTranscript = (data: LiveTranscriptionEvent) => {
       console.log("Received transcript:", data);
-      const { is_final: isFinal, speech_final: speechFinal } = data;
-      let thisCaption = data.channel.alternatives[0].transcript;
+      const { is_final: isFinal } = data;
+      const transcript = data.channel.alternatives[0].transcript;
 
-      if (thisCaption !== "") {
-        setCaption(thisCaption);
+      if (transcript !== "") {
         if (isFinal) {
           const timestamp = new Date().toLocaleTimeString();
-          setTranscriptions((prev) => [...prev, { text: thisCaption, timestamp }]);
+          setTranscriptions((prev) => [...prev, { text: transcript, timestamp }]);
         }
       }
-
-
     };
 
     if (connectionState === LiveConnectionState.OPEN) {
