@@ -7,11 +7,9 @@ interface Transcription {
 }
 
 export async function generateSummary(
-  transcriptions: Transcription[]
+  transcriptions: Transcription[],
+  openaiKey: string
 ): Promise<string> {
-  const { openaiKey } = useOpenAIKey()
-  const { setSummary } = useProjectEnv()
-
   if (!openaiKey) {
     throw new Error('OpenAI API key is not set')
   }
@@ -31,7 +29,13 @@ export async function generateSummary(
           {
             role: 'system',
             content:
-              'You are a helpful assistant that summarizes transcribed text. Create a clear, concise summary that captures the main points and key details.',
+              'You are an expert summarizer. Your task is to generate a concise and structured summary of a transcription in Markdown format. Follow this structure strictly:\n\n' +
+              'Overview: Provide a high-level summary of the content in 2-3 sentences. Mention the main topic and the purpose of the conversation.\n' +
+              'Key Points: List the critical points discussed in bullet format. Focus on essential details, avoiding redundant information.\n' +
+              'Important Quotes or Statements: Highlight 2-3 notable quotes or statements that capture the essence of the conversation. Use quotation marks.\n' +
+              'Action Items or Next Steps: If applicable, provide any actions, recommendations, or follow-ups mentioned in the transcription.\n' +
+              'Conclusion: End with a brief summary sentence that wraps up the main discussion or takeaway.\n' +
+              'Make sure the Markdown is properly formatted with headers, bullet points, and indentation for readability. Ensure all content is professional and concise.',
           },
           {
             role: 'user',
@@ -49,9 +53,6 @@ export async function generateSummary(
 
     const data = await response.json()
     const summary = data.choices[0].message.content
-
-    // Update the global summary state
-    setSummary(summary)
 
     return summary
   } catch (error) {

@@ -14,11 +14,119 @@ import {
 } from '@/app/context/MicrophoneContextProvider'
 import { Button } from '@/components/ui/button'
 import { Mic, MicOff, Sparkles } from 'lucide-react'
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
+import { generateSummary } from '@/apis/analyzeService'
+import { useOpenAIKey } from '@/app/context/OpenAIContextProvider'
+import { useProjectEnv } from '@/app/context/ProjectEnvContextProvider'
 
 const VoiceRecorder: () => JSX.Element = () => {
   const [transcriptions, setTranscriptions] = useState<
     { text: string; timestamp: string }[]
-  >([])
+  >([
+    {
+      text: '今天的天气真不错，阳光明媚。',
+      timestamp: '10:15:30',
+    },
+    {
+      text: '我们来讨论一下这个项目的进展情况。',
+      timestamp: '10:15:45',
+    },
+    {
+      text: '根据目前的开发进度，我们预计下周可以完成第一个版本。',
+      timestamp: '10:16:00',
+    },
+    {
+      text: '团队成员都非常努力，项目进展顺利。',
+      timestamp: '10:16:15',
+    },
+    {
+      text: '我们需要关注一下性能优化的问题。',
+      timestamp: '10:16:30',
+    },
+    {
+      text: '今天的天气真不错，阳光明媚。',
+      timestamp: '10:15:30',
+    },
+    {
+      text: '我们来讨论一下这个项目的进展情况。',
+      timestamp: '10:15:45',
+    },
+    {
+      text: '根据目前的开发进度，我们预计下周可以完成第一个版本。',
+      timestamp: '10:16:00',
+    },
+    {
+      text: '团队成员都非常努力，项目进展顺利。',
+      timestamp: '10:16:15',
+    },
+    {
+      text: '我们需要关注一下性能优化的问题。',
+      timestamp: '10:16:30',
+    },
+    {
+      text: '今天的天气真不错，阳光明媚。',
+      timestamp: '10:15:30',
+    },
+    {
+      text: '我们来讨论一下这个项目的进展情况。',
+      timestamp: '10:15:45',
+    },
+    {
+      text: '根据目前的开发进度，我们预计下周可以完成第一个版本。',
+      timestamp: '10:16:00',
+    },
+    {
+      text: '团队成员都非常努力，项目进展顺利。',
+      timestamp: '10:16:15',
+    },
+    {
+      text: '我们需要关注一下性能优化的问题。',
+      timestamp: '10:16:30',
+    },
+    {
+      text: '今天的天气真不错，阳光明媚。',
+      timestamp: '10:15:30',
+    },
+    {
+      text: '我们来讨论一下这个项目的进展情况。',
+      timestamp: '10:15:45',
+    },
+    {
+      text: '根据目前的开发进度，我们预计下周可以完成第一个版本。',
+      timestamp: '10:16:00',
+    },
+    {
+      text: '团队成员都非常努力，项目进展顺利。',
+      timestamp: '10:16:15',
+    },
+    {
+      text: '我们需要关注一下性能优化的问题。',
+      timestamp: '10:16:30',
+    },
+    {
+      text: '今天的天气真不错，阳光明媚。',
+      timestamp: '10:15:30',
+    },
+    {
+      text: '我们来讨论一下这个项目的进展情况。',
+      timestamp: '10:15:45',
+    },
+    {
+      text: '根据目前的开发进度，我们预计下周可以完成第一个版本。',
+      timestamp: '10:16:00',
+    },
+    {
+      text: '团队成员都非常努力，项目进展顺利。',
+      timestamp: '10:16:15',
+    },
+    {
+      text: '我们需要关注一下性能优化的问题。',
+      timestamp: '10:16:30',
+    },
+  ])
+
+  const { openaiKey } = useOpenAIKey()
+  const { setSummary } = useProjectEnv()
   const { connection, connectToDeepgram, connectionState } = useDeepgram()
   const {
     setupMicrophone,
@@ -116,26 +224,32 @@ const VoiceRecorder: () => JSX.Element = () => {
     }
   }
 
-  const handleSummarize = () => {
+  const handleSummarize = async () => {
     console.log('Summarizing transcriptions:', transcriptions)
+    const summary = await generateSummary(transcriptions, openaiKey)
+    setSummary(summary)
+    console.log('Summary:', summary)
   }
 
   return (
     <>
-      <div className="flex flex-col flex-auto h-full overflow-y-auto rounded-lg border  p-4">
-        <div className="relative w-full h-full">
-          <ul>
-            {transcriptions.map((transcription, index) => (
-              <li key={index} className="bg-gray-100 p-2 my-1 rounded">
-                <span className="text-xs text-gray-500 block">
-                  {transcription.timestamp}
-                </span>
-                <span>{transcription.text}</span>
-              </li>
-            ))}
-          </ul>
+      <div className="flex flex-col h-full rounded-lg border">
+        <div className="flex-1 overflow-hidden p-4">
+          <ScrollArea className="h-[calc(100vh-200px)]">
+            <ul>
+              {transcriptions.map((transcription, index) => (
+                <li key={index} className="bg-gray-100 p-2 my-1 rounded">
+                  <span className="text-xs text-gray-500 block">
+                    {transcription.timestamp}
+                  </span>
+                  <span>{transcription.text}</span>
+                </li>
+              ))}
+            </ul>
+            <ScrollBar orientation="vertical" />
+          </ScrollArea>
         </div>
-        <div className="flex justify-center gap-2">
+        <div className="flex justify-center gap-2 p-4">
           <Button onClick={toggleMicrophone} className="flex items-center">
             {microphoneState === MicrophoneState.Open ? (
               <>
