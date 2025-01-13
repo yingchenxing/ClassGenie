@@ -107,20 +107,18 @@ const VoiceRecorder: () => JSX.Element = () => {
 
   return (
     <>
-      <div className="flex flex-col h-full antialiased">
-        <div className="flex flex-col flex-auto h-full overflow-y-auto rounded-lg border  p-4">
-          <div className="relative w-full h-full">
-            <ul>
-              {transcriptions.map((transcription, index) => (
-                <li key={index} className="bg-gray-100 p-2 my-1 rounded">
-                  <span className="text-xs text-gray-500 block">{transcription.timestamp}</span>
-                  <span>{transcription.text}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+      <div className="flex flex-col flex-auto h-full overflow-y-auto rounded-lg border  p-4">
+        <div className="relative w-full h-full">
+          <ul>
+            {transcriptions.map((transcription, index) => (
+              <li key={index} className="bg-gray-100 p-2 my-1 rounded">
+                <span className="text-xs text-gray-500 block">{transcription.timestamp}</span>
+                <span>{transcription.text}</span>
+              </li>
+            ))}
+          </ul>
         </div>
-        <div className="flex justify-center gap-2 p-4">
+        <div className="flex justify-center gap-2">
           <Button onClick={toggleMicrophone} className="flex items-center">
             {microphoneState === MicrophoneState.Open ? (
               <>
@@ -141,6 +139,7 @@ const VoiceRecorder: () => JSX.Element = () => {
           </Button>
         </div>
       </div>
+
     </>
   );
 };
