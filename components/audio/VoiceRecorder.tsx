@@ -1,105 +1,117 @@
-"use client";
+'use client'
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react'
 import {
   LiveConnectionState,
   LiveTranscriptionEvent,
   LiveTranscriptionEvents,
   useDeepgram,
-} from "@/app/context/DeepgramContextProvider";
+} from '@/app/context/DeepgramContextProvider'
 import {
   MicrophoneEvents,
   MicrophoneState,
   useMicrophone,
-} from "@/app/context/MicrophoneContextProvider";
-import { Button } from "@/components/ui/button";
-import { Mic, MicOff, Sparkles } from "lucide-react";
+} from '@/app/context/MicrophoneContextProvider'
+import { Button } from '@/components/ui/button'
+import { Mic, MicOff, Sparkles } from 'lucide-react'
 
 const VoiceRecorder: () => JSX.Element = () => {
-  const [transcriptions, setTranscriptions] = useState<{ text: string; timestamp: string }[]>([]);
-  const { connection, connectToDeepgram, connectionState } = useDeepgram();
-  const { setupMicrophone, microphone, startMicrophone, stopMicrophone, microphoneState } = useMicrophone();
+  const [transcriptions, setTranscriptions] = useState<
+    { text: string; timestamp: string }[]
+  >([])
+  const { connection, connectToDeepgram, connectionState } = useDeepgram()
+  const {
+    setupMicrophone,
+    microphone,
+    startMicrophone,
+    stopMicrophone,
+    microphoneState,
+  } = useMicrophone()
 
   useEffect(() => {
-    setupMicrophone();
-  }, [setupMicrophone]);
+    setupMicrophone()
+  }, [setupMicrophone])
 
   useEffect(() => {
     if (microphoneState === MicrophoneState.Ready) {
       connectToDeepgram({
-        model: "nova-2",
+        model: 'nova-2',
         interim_results: true,
         smart_format: true,
         filler_words: true,
         utterance_end_ms: 3000,
-      });
+      })
     }
-  }, [microphoneState, connectToDeepgram]);
+  }, [microphoneState, connectToDeepgram])
 
   useEffect(() => {
-    if (!microphone || !connection) return;
+    if (!microphone || !connection) return
 
     const onData = (e: BlobEvent) => {
       if (e.data.size > 0) {
-        console.log("Sending data to Deepgram");
-        connection?.send(e.data);
+        console.log('Sending data to Deepgram')
+        connection?.send(e.data)
       }
-    };
+    }
 
     const onTranscript = (data: LiveTranscriptionEvent) => {
-      console.log("Received transcript:", data);
-      const { is_final: isFinal } = data;
-      const transcript = data.channel.alternatives[0].transcript;
+      console.log('Received transcript:', data)
+      const { is_final: isFinal } = data
+      const transcript = data.channel.alternatives[0].transcript
 
-      if (transcript !== "") {
+      if (transcript !== '') {
         if (isFinal) {
-          const timestamp = new Date().toLocaleTimeString();
-          setTranscriptions((prev) => [...prev, { text: transcript, timestamp }]);
+          const timestamp = new Date().toLocaleTimeString()
+          setTranscriptions((prev) => [
+            ...prev,
+            { text: transcript, timestamp },
+          ])
         }
       }
-    };
+    }
 
     if (connectionState === LiveConnectionState.OPEN) {
-      console.log("Adding event listeners");
-      connection.addListener(LiveTranscriptionEvents.Transcript, onTranscript);
-      microphone.addEventListener(MicrophoneEvents.DataAvailable, onData);
+      console.log('Adding event listeners')
+      connection.addListener(LiveTranscriptionEvents.Transcript, onTranscript)
+      microphone.addEventListener(MicrophoneEvents.DataAvailable, onData)
     }
 
     return () => {
-      console.log("Removing event listeners");
+      console.log('Removing event listeners')
       if (connection) {
-        connection.removeListener(LiveTranscriptionEvents.Transcript, onTranscript);
+        connection.removeListener(
+          LiveTranscriptionEvents.Transcript,
+          onTranscript
+        )
       }
       if (microphone) {
-        microphone.removeEventListener(MicrophoneEvents.DataAvailable, onData);
+        microphone.removeEventListener(MicrophoneEvents.DataAvailable, onData)
       }
-    };
-  }, [connection, microphone, connectionState]);
+    }
+  }, [connection, microphone, connectionState])
 
   useEffect(() => {
-    if (!connection) return;
+    if (!connection) return
 
     if (
       microphoneState !== MicrophoneState.Open &&
       connectionState === LiveConnectionState.OPEN
     ) {
-      connection.keepAlive();
+      connection.keepAlive()
     }
-
-
-  }, [microphoneState, connectionState]);
+  }, [microphoneState, connectionState])
 
   const toggleMicrophone = () => {
     if (microphoneState === MicrophoneState.Open) {
-      stopMicrophone();
+      stopMicrophone()
     } else {
-      startMicrophone();
+      startMicrophone()
     }
-  };
+  }
 
   const handleSummarize = () => {
-    console.log("Summarizing transcriptions:", transcriptions);
-  };
+    console.log('Summarizing transcriptions:', transcriptions)
+  }
 
   return (
     <>
@@ -108,7 +120,9 @@ const VoiceRecorder: () => JSX.Element = () => {
           <ul>
             {transcriptions.map((transcription, index) => (
               <li key={index} className="bg-gray-100 p-2 my-1 rounded">
-                <span className="text-xs text-gray-500 block">{transcription.timestamp}</span>
+                <span className="text-xs text-gray-500 block">
+                  {transcription.timestamp}
+                </span>
                 <span>{transcription.text}</span>
               </li>
             ))}
@@ -129,15 +143,12 @@ const VoiceRecorder: () => JSX.Element = () => {
           <Button
             onClick={handleSummarize}
             className="flex items-center"
-            disabled={transcriptions.length === 0}
-          >
+            disabled={transcriptions.length === 0}>
             <Sparkles className="mr-2" /> Summarize
           </Button>
         </div>
       </div>
-
     </>
-  );
-};
-
-export default VoiceRecorder;
+  )
+}
+export default VoiceRecorder
