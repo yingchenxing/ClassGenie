@@ -21,7 +21,7 @@ import { MicrophoneContextProvider } from "./context/MicrophoneContextProvider"
 import { DeepgramContextProvider } from "./context/DeepgramContextProvider"
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import MarkdownEditor from "@/components/editor/markdownEditor"
+import MarkdownEditor from "@/components/panel/markdownEditor"
 
 export default function Page() {
   const editor = useEditor({
@@ -43,12 +43,8 @@ export default function Page() {
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
                   <BreadcrumbLink href="#">
-                    Building Your Application
+                    New Project
                   </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
@@ -63,7 +59,7 @@ export default function Page() {
             </MicrophoneContextProvider>
           </ResizablePanel>
 
-          <ResizableHandle />
+          <ResizableHandle className="w-0" />
           <ResizablePanel>
             {/* <div className="h-full w-full rounded-xl bg-muted/50" /> */}
 

@@ -13,7 +13,7 @@ import {
   useMicrophone,
 } from "@/app/context/MicrophoneContextProvider";
 import { Button } from "@/components/ui/button";
-import { Mic, MicOff } from "lucide-react";
+import { Mic, MicOff, Sparkles } from "lucide-react";
 
 const VoiceRecorder: () => JSX.Element = () => {
   const [caption, setCaption] = useState<string | undefined>("Powered by Deepgram");
@@ -101,6 +101,10 @@ const VoiceRecorder: () => JSX.Element = () => {
     }
   };
 
+  const handleSummarize = () => {
+    console.log("Summarizing transcriptions:", transcriptions);
+  };
+
   return (
     <>
       <div className="flex flex-col h-full antialiased">
@@ -116,7 +120,7 @@ const VoiceRecorder: () => JSX.Element = () => {
             </ul>
           </div>
         </div>
-        <div className="flex justify-center p-4">
+        <div className="flex justify-center gap-2 p-4">
           <Button onClick={toggleMicrophone} className="flex items-center">
             {microphoneState === MicrophoneState.Open ? (
               <>
@@ -127,6 +131,13 @@ const VoiceRecorder: () => JSX.Element = () => {
                 <Mic className="mr-2" /> Start
               </>
             )}
+          </Button>
+          <Button
+            onClick={handleSummarize}
+            className="flex items-center"
+            disabled={transcriptions.length === 0}
+          >
+            <Sparkles className="mr-2" /> Summarize
           </Button>
         </div>
       </div>
