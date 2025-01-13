@@ -30,19 +30,19 @@ const VoiceRecorder: () => JSX.Element = () => {
 
   useEffect(() => {
     setupMicrophone()
-  }, [setupMicrophone])
+  }, [])
 
-  useEffect(() => {
-    if (microphoneState === MicrophoneState.Ready) {
-      connectToDeepgram({
-        model: 'nova-2',
-        interim_results: true,
-        smart_format: true,
-        filler_words: true,
-        utterance_end_ms: 3000,
-      })
-    }
-  }, [microphoneState, connectToDeepgram])
+  // useEffect(() => {
+  //   if (microphoneState === MicrophoneState.Ready) {
+  //     connectToDeepgram({
+  //       model: 'nova-2',
+  //       interim_results: true,
+  //       smart_format: true,
+  //       filler_words: true,
+  //       utterance_end_ms: 3000,
+  //     })
+  //   }
+  // }, [microphoneState, connectToDeepgram])
 
   useEffect(() => {
     if (!microphone || !connection) return
@@ -106,6 +106,13 @@ const VoiceRecorder: () => JSX.Element = () => {
       stopMicrophone()
     } else {
       startMicrophone()
+      connectToDeepgram({
+        model: 'nova-2',
+        interim_results: true,
+        smart_format: true,
+        filler_words: true,
+        utterance_end_ms: 3000,
+      })
     }
   }
 
@@ -151,4 +158,5 @@ const VoiceRecorder: () => JSX.Element = () => {
     </>
   )
 }
+
 export default VoiceRecorder
