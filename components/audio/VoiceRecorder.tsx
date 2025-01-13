@@ -13,6 +13,7 @@ import {
   useMicrophone,
 } from "@/app/context/MicrophoneContextProvider";
 import { Button } from "@/components/ui/button";
+import { Mic, MicOff } from "lucide-react";
 
 const VoiceRecorder: () => JSX.Element = () => {
   const [caption, setCaption] = useState<string | undefined>("Powered by Deepgram");
@@ -92,27 +93,41 @@ const VoiceRecorder: () => JSX.Element = () => {
 
   }, [microphoneState, connectionState]);
 
+  const toggleMicrophone = () => {
+    if (microphoneState === MicrophoneState.Open) {
+      stopMicrophone();
+    } else {
+      startMicrophone();
+    }
+  };
+
   return (
     <>
-      <div className="flex h-full antialiased">
-        <div className="flex flex-row h-full w-full overflow-x-hidden">
-          <div className="flex flex-col flex-auto h-full">
-            <div className="relative w-full h-full">
-              <div className="absolute top-4 left-4">
-                <Button onClick={startMicrophone}>Start</Button>
-                <Button onClick={stopMicrophone} className="ml-2">Stop</Button>
-              </div>
-              <div className="absolute top-20 left-4 max-w-4xl mx-auto">
-                <ul>
-                  {transcriptions.map((transcription, index) => (
-                    <li key={index} className="bg-gray-100 p-2 my-1 rounded">
-                      <span className="font-bold">{transcription.timestamp}:</span> {transcription.text}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+      <div className="flex flex-col h-full antialiased">
+        <div className="flex flex-col flex-auto h-full overflow-y-auto rounded-lg border  p-4">
+          <div className="relative w-full h-full">
+            <ul>
+              {transcriptions.map((transcription, index) => (
+                <li key={index} className="bg-gray-100 p-2 my-1 rounded">
+                  <span className="text-xs text-gray-500 block">{transcription.timestamp}</span>
+                  <span>{transcription.text}</span>
+                </li>
+              ))}
+            </ul>
           </div>
+        </div>
+        <div className="flex justify-center p-4">
+          <Button onClick={toggleMicrophone} className="flex items-center">
+            {microphoneState === MicrophoneState.Open ? (
+              <>
+                <MicOff className="mr-2" /> Stop
+              </>
+            ) : (
+              <>
+                <Mic className="mr-2" /> Start
+              </>
+            )}
+          </Button>
         </div>
       </div>
     </>

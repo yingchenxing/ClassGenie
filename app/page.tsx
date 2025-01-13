@@ -1,3 +1,5 @@
+"use client"
+
 import VoiceRecorder from "@/components/audio/VoiceRecorder"
 import { AppSidebar } from "@/components/nav/app-sidebar"
 import {
@@ -17,13 +19,22 @@ import {
 } from "@/components/ui/sidebar"
 import { MicrophoneContextProvider } from "./context/MicrophoneContextProvider"
 import { DeepgramContextProvider } from "./context/DeepgramContextProvider"
-
+import { useEditor, EditorContent } from '@tiptap/react'
+import StarterKit from '@tiptap/starter-kit'
+import MarkdownEditor from "@/components/editor/markdownEditor"
 
 export default function Page() {
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+    ],
+    content: '<p>Hello World! 🌎️</p>',
+  })
+
   return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset>
+      <SidebarInset className="h-[95vh] overflow-y-hidden">
         <header className="flex h-16 shrink-0 items-center gap-2">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
@@ -54,7 +65,9 @@ export default function Page() {
 
           <ResizableHandle />
           <ResizablePanel>
-            <div className="h-full w-full rounded-xl bg-muted/50" />
+            {/* <div className="h-full w-full rounded-xl bg-muted/50" /> */}
+
+            <MarkdownEditor />
           </ResizablePanel>
         </ResizablePanelGroup>
 
