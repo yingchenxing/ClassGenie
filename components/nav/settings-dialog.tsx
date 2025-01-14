@@ -87,7 +87,7 @@ export function SettingsDialog({
             <Input
               id="deepgram-key"
               type="password"
-              value={deepgramKey}
+              value={deepgramKey || ''}
               onChange={(e) => setDeepgramKey(e.target.value)}
               placeholder="Enter your Deepgram API key"
             />

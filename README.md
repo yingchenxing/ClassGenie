@@ -1,36 +1,77 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Voice Recorder & Summarizer
+
+Are you tired of taking notes during lengthy lectures or endless meetings? This Next.js application provides real-time voice transcription and AI-powered summarization, helping you focus on the conversation while automatically capturing and organizing the key points. Try it out at [record.11chen.link](https://record.11chen.link/)
+
+## Features
+
+- 🎙️ Real-time voice recording and transcription
+- 🤖 AI-powered summarization of conversations
+- 📝 Markdown editor for summary viewing and editing
+
+## Disclaimer
+
+⚠️ **Recording Notice**: This application records audio through your device's microphone. Please ensure you have obtained appropriate consent from all parties before recording any conversations. Users are responsible for complying with all applicable laws and regulations regarding audio recording in their jurisdiction.
+
+**Liability Disclaimer**: The developers of this application assume no responsibility or liability for any misuse of the recording functionality or any consequences arising from the use of this application. Users are solely responsible for how they use this tool and must ensure their use complies with all applicable laws, regulations, and ethical guidelines.
+
+## Prerequisites
+
+- Node.js 18+
+- OpenAI API key
+- Deepgram API key
 
 ## Getting Started
 
-First, run the development server:
+1. Clone the repository:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Run the development server:
+
+```bash
+npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Configuration
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Before using the application, you'll need to set up your API keys:
 
-## Learn More
+1. Get your API keys:
 
-To learn more about Next.js, take a look at the following resources:
+   - [OpenAI API Key](https://platform.openai.com/api-keys)
+   - [Deepgram API Key](https://console.deepgram.com/project)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. Click the settings icon in the top right corner of the application
+3. Enter your API keys in the settings dialog
+4. Click Save
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## How to Use
 
-## Deploy on Vercel
+1. **Start Recording**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   - Click the "Start" button with the microphone icon
+   - Allow microphone access when prompted
+   - Speak clearly into your microphone
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+2. **View Transcriptions**
+
+   - Real-time transcriptions will appear in the left panel
+
+3. **Generate Summary**
+   - Click the "Summarize" button with the sparkles icon
+   - The AI will generate a structured summary in markdown format
+   - View and edit the summary in the right panel
+
+## License
+
+MIT License - feel free to use this project for your own purposes.
