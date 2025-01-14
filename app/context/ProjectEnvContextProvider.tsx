@@ -47,9 +47,4 @@ function useProjectEnv(): ProjectEnvContextType {
   return context
 }
 
-function setSummary(content: string) {
-  const context = useProjectEnv()
-  context.setSummary(content)
-}
-
-export { ProjectEnvContextProvider, useProjectEnv, setSummary }
+export { ProjectEnvContextProvider, useProjectEnv }
