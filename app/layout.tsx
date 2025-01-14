@@ -3,6 +3,8 @@ import localFont from 'next/font/local'
 import './globals.css'
 import { ProjectEnvContextProvider } from './context/ProjectEnvContextProvider'
 import { OpenAIKeyProvider } from './context/OpenAIContextProvider'
+import { DeepgramContextProvider } from './context/DeepgramContextProvider'
+import { MicrophoneContextProvider } from './context/MicrophoneContextProvider'
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -30,7 +32,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ProjectEnvContextProvider>
-          <OpenAIKeyProvider>{children}</OpenAIKeyProvider>
+          <OpenAIKeyProvider>
+            <MicrophoneContextProvider>
+              <DeepgramContextProvider>
+                {children}
+              </DeepgramContextProvider>
+            </MicrophoneContextProvider>
+          </OpenAIKeyProvider>
         </ProjectEnvContextProvider>
       </body>
     </html>

@@ -18,13 +18,16 @@ import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { generateSummary } from '@/apis/analyzeService'
 import { useOpenAIKey } from '@/app/context/OpenAIContextProvider'
 import { useProjectEnv } from '@/app/context/ProjectEnvContextProvider'
+import { SettingsDialog } from '@/components/nav/settings-dialog'
 
 const VoiceRecorder: () => JSX.Element = () => {
   const [transcriptions, setTranscriptions] = useState<
     { text: string; timestamp: string }[]
   >([])
+  const [settingsOpen, setSettingsOpen] = useState(false)
 
   const { openaiKey } = useOpenAIKey()
+  const { deepgramKey } = useDeepgram()
   const { setSummary } = useProjectEnv()
   const { connection, connectToDeepgram, connectionState } = useDeepgram()
   const {
@@ -109,6 +112,11 @@ const VoiceRecorder: () => JSX.Element = () => {
   }, [microphoneState, connectionState])
 
   const toggleMicrophone = () => {
+    if (!deepgramKey) {
+      setSettingsOpen(true)
+      return
+    }
+
     if (microphoneState === MicrophoneState.Open) {
       stopMicrophone()
     } else {
@@ -168,6 +176,7 @@ const VoiceRecorder: () => JSX.Element = () => {
           </Button>
         </div>
       </div>
+      <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
     </>
   )
 }

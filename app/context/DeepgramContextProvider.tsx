@@ -22,6 +22,8 @@ interface DeepgramContextType {
   connectToDeepgram: (options: LiveSchema, endpoint?: string) => Promise<void>;
   disconnectFromDeepgram: () => void;
   connectionState: LiveConnectionState;
+  deepgramKey: string | null;
+  setDeepgramKey: (key: string) => void;
 }
 
 const DeepgramContext = createContext<DeepgramContextType | undefined>(
@@ -32,14 +34,11 @@ interface DeepgramContextProviderProps {
   children: ReactNode;
 }
 
-const getApiKey = async (): Promise<string> => {
-  return process.env.NEXT_PUBLIC_DEEPGRAM_API_KEY || "";
-};
-
 const DeepgramContextProvider: FunctionComponent<
   DeepgramContextProviderProps
 > = ({ children }) => {
   const [connection, setConnection] = useState<LiveClient | null>(null);
+  const [deepgramKey, setDeepgramKey] = useState<string | null>(null);
   const [connectionState, setConnectionState] = useState<LiveConnectionState>(
     LiveConnectionState.CLOSED
   );
@@ -52,7 +51,10 @@ const DeepgramContextProvider: FunctionComponent<
    * @returns A Promise that resolves when the connection is established.
    */
   const connectToDeepgram = async (options: LiveSchema, endpoint?: string) => {
-    const key = await getApiKey();
+    const key = deepgramKey;
+    if (!key) {
+      throw new Error("Deepgram API key is not set");
+    }
     const deepgram = createClient(key);
 
     const conn = deepgram.listen.live(options, endpoint);
@@ -82,6 +84,8 @@ const DeepgramContextProvider: FunctionComponent<
         connectToDeepgram,
         disconnectFromDeepgram,
         connectionState,
+        deepgramKey,
+        setDeepgramKey,
       }}
     >
       {children}
