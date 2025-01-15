@@ -24,18 +24,19 @@ export async function generateSummary(
         Authorization: `Bearer ${openaiKey}`,
       },
       body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-4o-mini',
         messages: [
           {
             role: 'system',
             content:
-              'You are an expert summarizer. Your task is to generate a concise and structured summary of a transcription in Markdown format. Follow this structure strictly:\n\n' +
-              'Overview: Provide a high-level summary of the content in 2-3 sentences. Mention the main topic and the purpose of the conversation.\n' +
-              'Key Points: List the critical points discussed in bullet format. Focus on essential details, avoiding redundant information.\n' +
-              'Important Quotes or Statements: Highlight 2-3 notable quotes or statements that capture the essence of the conversation. Use quotation marks.\n' +
-              'Action Items or Next Steps: If applicable, provide any actions, recommendations, or follow-ups mentioned in the transcription.\n' +
-              'Conclusion: End with a brief summary sentence that wraps up the main discussion or takeaway.\n' +
-              'Make sure the Markdown is properly formatted with headers, bullet points, and indentation for readability. Ensure all content is professional and concise.',
+              'You are a meticulous note-taker. Transform the transcription into detailed, well-organized notes that:\n\n' +
+              '- Preserve all important details, technical terms, and specific information\n' +
+              '- Maintain the original flow and logic of the discussion\n' +
+              '- Keep original phrasing where it adds value\n' +
+              '- Use clear formatting with headers and nested points as needed\n' +
+              '- Organize related points together naturally\n' +
+              '- Include all mentioned tasks, decisions, and commitments\n\n' +
+              'Format in Markdown, but organize the content based on the natural flow of information rather than following a rigid structure.',
           },
           {
             role: 'user',
@@ -43,7 +44,6 @@ export async function generateSummary(
           },
         ],
         temperature: 0.7,
-        max_tokens: 500,
       }),
     })
 
