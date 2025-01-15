@@ -13,7 +13,7 @@ import {
   useMicrophone,
 } from '@/app/context/MicrophoneContextProvider'
 import { Button } from '@/components/ui/button'
-import { Mic, MicOff, Sparkles, Download } from 'lucide-react'
+import { Mic, MicOff, Sparkles, Download, Trash2 } from 'lucide-react'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { generateSummary } from '@/apis/analyzeService'
 import { useOpenAIKey } from '@/app/context/OpenAIContextProvider'
@@ -23,7 +23,13 @@ import { SettingsDialog } from '@/components/nav/settings-dialog'
 const VoiceRecorder: () => JSX.Element = () => {
   const [transcriptions, setTranscriptions] = useState<
     { text: string; timestamp: string }[]
-  >([])
+  >(() => {
+    if (typeof window !== 'undefined') {
+      const savedTranscriptions = localStorage.getItem('transcriptions')
+      return savedTranscriptions ? JSON.parse(savedTranscriptions) : []
+    }
+    return []
+  })
   const [settingsOpen, setSettingsOpen] = useState(false)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
 
@@ -161,6 +167,16 @@ const VoiceRecorder: () => JSX.Element = () => {
     }
   }, [transcriptions])
 
+  // Save transcriptions to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('transcriptions', JSON.stringify(transcriptions))
+  }, [transcriptions])
+
+  const handleClear = () => {
+    setTranscriptions([])
+    localStorage.removeItem('transcriptions')
+  }
+
   return (
     <>
       <div className="flex flex-col h-full rounded-lg border">
@@ -180,6 +196,13 @@ const VoiceRecorder: () => JSX.Element = () => {
           </ScrollArea>
         </div>
         <div className="flex justify-center gap-2 p-4">
+          <Button
+            onClick={handleClear}
+            variant="destructive"
+            className="flex items-center"
+            disabled={transcriptions.length === 0}>
+            <Trash2 className="mr-2" /> Clear
+          </Button>
           <Button onClick={toggleMicrophone} className="flex items-center">
             {microphoneState === MicrophoneState.Open ? (
               <>
