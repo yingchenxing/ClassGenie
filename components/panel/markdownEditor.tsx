@@ -1,6 +1,8 @@
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Typography from '@tiptap/extension-typography'
+import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
+import { common, createLowlight } from 'lowlight'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useProjectEnv } from '@/app/context/ProjectEnvContextProvider'
 import { useEffect } from 'react'
@@ -10,12 +12,12 @@ import TurndownService from 'turndown'
 import {
   Bold,
   Italic,
+  Heading,
   List,
   ListOrdered,
-  Heading1,
-  Heading2,
   Quote,
-  Code,
+  Code2,
+  FileCode,
   Download,
   LucideIcon,
 } from 'lucide-react'
@@ -24,8 +26,10 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { Separator } from '@/components/ui/separator'
 
 const md = new MarkdownIt()
+const lowlight = createLowlight(common)
 
 interface ToolbarButtonProps {
   title: string
@@ -60,7 +64,15 @@ export default function MarkdownEditor() {
   const { summary } = useProjectEnv()
 
   const editor = useEditor({
-    extensions: [StarterKit, Typography],
+    extensions: [
+      StarterKit.configure({
+        codeBlock: false,
+      }),
+      Typography,
+      CodeBlockLowlight.configure({
+        lowlight,
+      }),
+    ],
     editorProps: {
       attributes: {
         class: 'prose mx-auto focus:outline-none p-4 leading-tight h-full',
@@ -97,59 +109,85 @@ export default function MarkdownEditor() {
 
   return (
     <ScrollArea className="border rounded-lg h-full w-full flex flex-col">
-      <div className="border-b p-2 flex gap-1 flex-wrap">
-        <ToolbarButton
-          title="Bold"
-          icon={Bold}
-          onClick={() => editor.chain().focus().toggleBold().run()}
-          isActive={editor.isActive('bold')}
-        />
-        <ToolbarButton
-          title="Italic"
-          icon={Italic}
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-          isActive={editor.isActive('italic')}
-        />
-        <ToolbarButton
-          title="Heading 1"
-          icon={Heading1}
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 1 }).run()
-          }
-          isActive={editor.isActive('heading', { level: 1 })}
-        />
-        <ToolbarButton
-          title="Heading 2"
-          icon={Heading2}
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 2 }).run()
-          }
-          isActive={editor.isActive('heading', { level: 2 })}
-        />
-        <ToolbarButton
-          title="Bullet List"
-          icon={List}
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
-          isActive={editor.isActive('bulletList')}
-        />
-        <ToolbarButton
-          title="Numbered List"
-          icon={ListOrdered}
-          onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          isActive={editor.isActive('orderedList')}
-        />
-        <ToolbarButton
-          title="Blockquote"
-          icon={Quote}
-          onClick={() => editor.chain().focus().toggleBlockquote().run()}
-          isActive={editor.isActive('blockquote')}
-        />
-        <ToolbarButton
-          title="Code"
-          icon={Code}
-          onClick={() => editor.chain().focus().toggleCode().run()}
-          isActive={editor.isActive('code')}
-        />
+      <div className="border-b p-2 flex gap-1 flex-wrap items-center">
+        <div className="flex gap-1">
+          <ToolbarButton
+            title="Bold"
+            icon={Bold}
+            onClick={() => editor.chain().focus().toggleBold().run()}
+            isActive={editor.isActive('bold')}
+          />
+          <ToolbarButton
+            title="Italic"
+            icon={Italic}
+            onClick={() => editor.chain().focus().toggleItalic().run()}
+            isActive={editor.isActive('italic')}
+          />
+        </div>
+
+        <Separator orientation="vertical" className="h-6" />
+
+        <div className="flex gap-1">
+          <ToolbarButton
+            title="Heading 1"
+            icon={Heading}
+            onClick={() =>
+              editor.chain().focus().toggleHeading({ level: 1 }).run()
+            }
+            isActive={editor.isActive('heading', { level: 1 })}
+          />
+          <ToolbarButton
+            title="Heading 2"
+            icon={Heading}
+            onClick={() =>
+              editor.chain().focus().toggleHeading({ level: 2 }).run()
+            }
+            isActive={editor.isActive('heading', { level: 2 })}
+          />
+        </div>
+
+        <Separator orientation="vertical" className="h-6" />
+
+        <div className="flex gap-1">
+          <ToolbarButton
+            title="Bullet List"
+            icon={List}
+            onClick={() => editor.chain().focus().toggleBulletList().run()}
+            isActive={editor.isActive('bulletList')}
+          />
+          <ToolbarButton
+            title="Numbered List"
+            icon={ListOrdered}
+            onClick={() => editor.chain().focus().toggleOrderedList().run()}
+            isActive={editor.isActive('orderedList')}
+          />
+          <ToolbarButton
+            title="Blockquote"
+            icon={Quote}
+            onClick={() => editor.chain().focus().toggleBlockquote().run()}
+            isActive={editor.isActive('blockquote')}
+          />
+        </div>
+
+        <Separator orientation="vertical" className="h-6" />
+
+        <div className="flex gap-1">
+          <ToolbarButton
+            title="Inline Code"
+            icon={Code2}
+            onClick={() => editor.chain().focus().toggleCode().run()}
+            isActive={editor.isActive('code')}
+          />
+          <ToolbarButton
+            title="Code Block"
+            icon={FileCode}
+            onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+            isActive={editor.isActive('codeBlock')}
+          />
+        </div>
+
+        <div className="flex-1" />
+
         <ToolbarButton
           title="Export Markdown"
           icon={Download}

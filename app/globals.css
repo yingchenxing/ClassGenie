@@ -92,3 +92,69 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* Code Block Styles */
+.prose pre {
+  @apply bg-muted p-4 rounded-lg my-4 overflow-x-auto;
+}
+
+.prose code {
+  @apply bg-muted px-1.5 py-0.5 rounded text-sm;
+}
+
+.prose pre code {
+  @apply bg-transparent p-0 text-sm;
+}
+
+/* Syntax Highlighting */
+.hljs-comment,
+.hljs-quote {
+  @apply text-muted-foreground;
+}
+
+.hljs-variable,
+.hljs-template-variable,
+.hljs-attribute,
+.hljs-tag,
+.hljs-name,
+.hljs-regexp,
+.hljs-link,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class {
+  @apply text-red-500;
+}
+
+.hljs-number,
+.hljs-meta,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params {
+  @apply text-orange-500;
+}
+
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet {
+  @apply text-green-500;
+}
+
+.hljs-title,
+.hljs-section {
+  @apply text-blue-500;
+}
+
+.hljs-keyword,
+.hljs-selector-tag {
+  @apply text-purple-500;
+}
+
+.hljs-emphasis {
+  @apply italic;
+}
+
+.hljs-strong {
+  @apply font-bold;
+}
