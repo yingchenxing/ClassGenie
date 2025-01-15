@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import {
   LiveConnectionState,
   LiveTranscriptionEvent,
@@ -13,7 +13,7 @@ import {
   useMicrophone,
 } from '@/app/context/MicrophoneContextProvider'
 import { Button } from '@/components/ui/button'
-import { Mic, MicOff, Sparkles } from 'lucide-react'
+import { Mic, MicOff, Sparkles, Download } from 'lucide-react'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { generateSummary } from '@/apis/analyzeService'
 import { useOpenAIKey } from '@/app/context/OpenAIContextProvider'
@@ -25,6 +25,7 @@ const VoiceRecorder: () => JSX.Element = () => {
     { text: string; timestamp: string }[]
   >([])
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const scrollAreaRef = useRef<HTMLDivElement>(null)
 
   const { openaiKey } = useOpenAIKey()
   const { deepgramKey } = useDeepgram()
@@ -138,11 +139,33 @@ const VoiceRecorder: () => JSX.Element = () => {
     console.log('Summary:', summary)
   }
 
+  const handleExport = () => {
+    const content = transcriptions
+      .map((t) => `[${t.timestamp}] ${t.text}`)
+      .join('\n')
+
+    const blob = new Blob([content], { type: 'text/plain' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `transcription-${new Date().toISOString().split('T')[0]}.txt`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }
+
+  useEffect(() => {
+    if (scrollAreaRef.current) {
+      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight
+    }
+  }, [transcriptions])
+
   return (
     <>
       <div className="flex flex-col h-full rounded-lg border">
         <div className="flex-1 overflow-hidden p-4">
-          <ScrollArea className="h-[calc(100vh-200px)]">
+          <ScrollArea ref={scrollAreaRef} className="h-[calc(100vh-200px)]">
             <ul>
               {transcriptions.map((transcription, index) => (
                 <li key={index} className="bg-gray-100 p-2 my-1 rounded">
@@ -173,6 +196,12 @@ const VoiceRecorder: () => JSX.Element = () => {
             className="flex items-center"
             disabled={transcriptions.length === 0}>
             <Sparkles className="mr-2" /> Summarize
+          </Button>
+          <Button
+            onClick={handleExport}
+            className="flex items-center"
+            disabled={transcriptions.length === 0}>
+            <Download className="mr-2" /> Export
           </Button>
         </div>
       </div>
