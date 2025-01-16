@@ -7,11 +7,6 @@ import {
   LiveTranscriptionEvents,
   useDeepgram,
 } from '@/app/context/DeepgramContextProvider'
-import {
-  MicrophoneEvents,
-  MicrophoneState,
-  useMicrophone,
-} from '@/app/context/MicrophoneContextProvider'
 import { Button } from '@/components/ui/button'
 import { Mic, MicOff, Sparkles, Download, Trash2 } from 'lucide-react'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
@@ -80,7 +75,7 @@ const VoiceRecorder: () => JSX.Element = () => {
     if (connectionState === SOCKET_STATES.open) {
       console.log('Adding event listeners')
       connection.addListener(LiveTranscriptionEvents.Transcript, onTranscript)
-      microphone.addEventListener(MicrophoneEvents.DataAvailable, onData)
+      microphone.addEventListener('dataavailable', onData)
       microphone.start(250)
     }
 
@@ -90,7 +85,7 @@ const VoiceRecorder: () => JSX.Element = () => {
         LiveTranscriptionEvents.Transcript,
         onTranscript
       )
-      microphone.removeEventListener(MicrophoneEvents.DataAvailable, onData)
+      microphone.removeEventListener('dataavailable', onData)
 
     }
   }, [connectionState])

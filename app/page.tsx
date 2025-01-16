@@ -19,8 +19,6 @@ import {
 } from "@/components/ui/sidebar"
 import { Settings } from "lucide-react"
 import { useState } from "react"
-import { MicrophoneContextProvider } from "./context/MicrophoneContextProvider"
-import { DeepgramContextProvider } from "./context/DeepgramContextProvider"
 import MarkdownEditor from "@/components/panel/markdownEditor"
 
 export default function Page() {

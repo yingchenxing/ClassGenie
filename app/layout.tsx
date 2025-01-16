@@ -4,7 +4,6 @@ import './globals.css'
 import { ProjectEnvContextProvider } from './context/ProjectEnvContextProvider'
 import { OpenAIKeyProvider } from './context/OpenAIContextProvider'
 import { DeepgramContextProvider } from './context/DeepgramContextProvider'
-import { MicrophoneContextProvider } from './context/MicrophoneContextProvider'
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -33,11 +32,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ProjectEnvContextProvider>
           <OpenAIKeyProvider>
-            <MicrophoneContextProvider>
-              <DeepgramContextProvider>
-                {children}
-              </DeepgramContextProvider>
-            </MicrophoneContextProvider>
+            <DeepgramContextProvider>
+              {children}
+            </DeepgramContextProvider>
           </OpenAIKeyProvider>
         </ProjectEnvContextProvider>
       </body>
