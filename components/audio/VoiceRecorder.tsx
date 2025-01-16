@@ -36,20 +36,20 @@ const VoiceRecorder: () => JSX.Element = () => {
 
 
   const [microphone, setMicrophone] = useState<MediaRecorder | null>(null)
+  const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
 
-  useEffect(() => {
-    const setupMicrophone = async () => {
-      const userMedia = await navigator.mediaDevices.getUserMedia({
-        audio: {
-          noiseSuppression: true,
-          echoCancellation: true,
-        }
-      })
-      const microphone = new MediaRecorder(userMedia)
-      setMicrophone(microphone)
-    }
-    setupMicrophone()
-  }, [])
+  const setupMicrophone = async () => {
+    const userMedia = await navigator.mediaDevices.getUserMedia({
+      audio: {
+        noiseSuppression: true,
+        echoCancellation: true,
+      }
+    })
+    setMediaStream(userMedia);
+    const microphone = new MediaRecorder(userMedia)
+    setMicrophone(microphone)
+  }
+
 
 
   useEffect(() => {
@@ -93,7 +93,7 @@ const VoiceRecorder: () => JSX.Element = () => {
       microphone.removeEventListener(MicrophoneEvents.DataAvailable, onData)
 
     }
-  }, [connectionState, microphone])
+  }, [connectionState])
 
   useEffect(() => {
     if (!connection) return
@@ -115,7 +115,7 @@ const VoiceRecorder: () => JSX.Element = () => {
     }
   }, [connectionState])
 
-  const toggleMicrophone = () => {
+  const toggleMicrophone = async () => {
     if (!deepgramKey) {
       setSettingsOpen(true)
       return
@@ -124,7 +124,11 @@ const VoiceRecorder: () => JSX.Element = () => {
     if (connectionState === SOCKET_STATES.open) {
       disconnectFromDeepgram()
       microphone?.stop()
+      mediaStream?.getTracks().forEach(track => track.stop())
+      setMediaStream(null)
+      setMicrophone(null)
     } else {
+      await setupMicrophone()
       connectToDeepgram({
         model: 'nova-2',
         interim_results: true,
