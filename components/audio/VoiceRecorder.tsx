@@ -23,13 +23,7 @@ import { SettingsDialog } from '@/components/nav/settings-dialog'
 const VoiceRecorder: () => JSX.Element = () => {
   const [transcriptions, setTranscriptions] = useState<
     { text: string; timestamp: string }[]
-  >(() => {
-    if (typeof window !== 'undefined') {
-      const savedTranscriptions = localStorage.getItem('transcriptions')
-      return savedTranscriptions ? JSON.parse(savedTranscriptions) : []
-    }
-    return []
-  })
+  >([])
   const [settingsOpen, setSettingsOpen] = useState(false)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
 
@@ -170,13 +164,23 @@ const VoiceRecorder: () => JSX.Element = () => {
 
   // Save transcriptions to localStorage whenever they change
   useEffect(() => {
-    localStorage.setItem('transcriptions', JSON.stringify(transcriptions))
+    if (transcriptions.length > 0) {
+      localStorage.setItem('transcriptions', JSON.stringify(transcriptions))
+    }
   }, [transcriptions])
 
   const handleClear = () => {
     setTranscriptions([])
     localStorage.removeItem('transcriptions')
   }
+
+  // Move localStorage check to useEffect
+  useEffect(() => {
+    const savedTranscriptions = localStorage.getItem('transcriptions')
+    if (savedTranscriptions) {
+      setTranscriptions(JSON.parse(savedTranscriptions))
+    }
+  }, [])
 
   return (
     <>
