@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react'
 import {
-  LiveConnectionState,
+  CONNECTION_STATE,
   LiveTranscriptionEvent,
   LiveTranscriptionEvents,
   useDeepgram,
@@ -65,7 +65,7 @@ const VoiceRecorder: () => JSX.Element = () => {
     if (!microphone || !connection) return
 
     const onData = (e: BlobEvent) => {
-      if (e.data.size > 0) {
+      if (e.data.size > 0 && connectionState === CONNECTION_STATE.Open) {
         console.log('Sending data to Deepgram')
         connection?.send(e.data)
       }
@@ -87,7 +87,7 @@ const VoiceRecorder: () => JSX.Element = () => {
       }
     }
 
-    if (connectionState === LiveConnectionState.OPEN) {
+    if (connectionState === CONNECTION_STATE.Open) {
       console.log('Adding event listeners')
       connection.addListener(LiveTranscriptionEvents.Transcript, onTranscript)
       microphone.addEventListener(MicrophoneEvents.DataAvailable, onData)
@@ -112,7 +112,7 @@ const VoiceRecorder: () => JSX.Element = () => {
 
     if (
       microphoneState !== MicrophoneState.Open &&
-      connectionState === LiveConnectionState.OPEN
+      connectionState === CONNECTION_STATE.Open
     ) {
       connection.keepAlive()
     }
