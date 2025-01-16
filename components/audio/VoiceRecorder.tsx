@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react'
 import {
-  CONNECTION_STATE,
+  SOCKET_STATES,
   LiveTranscriptionEvent,
   LiveTranscriptionEvents,
   useDeepgram,
@@ -30,7 +30,7 @@ const VoiceRecorder: () => JSX.Element = () => {
   const { openaiKey } = useOpenAIKey()
   const { deepgramKey } = useDeepgram()
   const { setSummary } = useProjectEnv()
-  const { connection, connectToDeepgram, connectionState } = useDeepgram()
+  const { connection, connectToDeepgram, connectionState, disconnectFromDeepgram } = useDeepgram()
   const {
     setupMicrophone,
     microphone,
@@ -38,29 +38,18 @@ const VoiceRecorder: () => JSX.Element = () => {
     stopMicrophone,
     microphoneState,
   } = useMicrophone()
+  const keepAliveInterval = useRef<any>();
 
   useEffect(() => {
     setupMicrophone()
   }, [])
 
-  // useEffect(() => {
-  //   if (microphoneState === MicrophoneState.Ready) {
-  //     connectToDeepgram({
-  //       model: 'nova-2',
-  //       interim_results: true,
-  //       smart_format: true,
-  //       filler_words: true,
-  //       utterance_end_ms: 3000,
-  //     })
-  //   }
-  // }, [microphoneState, connectToDeepgram])
 
   useEffect(() => {
     if (!microphone || !connection) return
 
     const onData = (e: BlobEvent) => {
-      if (e.data.size > 0 && connectionState === CONNECTION_STATE.Open) {
-        console.log('Sending data to Deepgram')
+      if (e.data.size > 0 && connectionState === SOCKET_STATES.open) {
         connection?.send(e.data)
       }
     }
@@ -81,34 +70,42 @@ const VoiceRecorder: () => JSX.Element = () => {
       }
     }
 
-    if (connectionState === CONNECTION_STATE.Open) {
+    if (connectionState === SOCKET_STATES.open) {
       console.log('Adding event listeners')
       connection.addListener(LiveTranscriptionEvents.Transcript, onTranscript)
       microphone.addEventListener(MicrophoneEvents.DataAvailable, onData)
+
+      startMicrophone()
     }
 
     return () => {
       console.log('Removing event listeners')
-      if (connection) {
-        connection.removeListener(
-          LiveTranscriptionEvents.Transcript,
-          onTranscript
-        )
-      }
-      if (microphone) {
-        microphone.removeEventListener(MicrophoneEvents.DataAvailable, onData)
-      }
+      connection.removeListener(
+        LiveTranscriptionEvents.Transcript,
+        onTranscript
+      )
+      microphone.removeEventListener(MicrophoneEvents.DataAvailable, onData)
+
     }
-  }, [connection, microphone, connectionState])
+  }, [connectionState])
 
   useEffect(() => {
     if (!connection) return
 
     if (
       microphoneState !== MicrophoneState.Open &&
-      connectionState === CONNECTION_STATE.Open
+      connectionState === SOCKET_STATES.open
     ) {
       connection.keepAlive()
+      keepAliveInterval.current = setInterval(() => {
+        connection.keepAlive();
+      }, 10000);
+    } else {
+      clearInterval(keepAliveInterval.current);
+    }
+
+    return () => {
+      clearInterval(keepAliveInterval.current);
     }
   }, [microphoneState, connectionState])
 
@@ -118,10 +115,10 @@ const VoiceRecorder: () => JSX.Element = () => {
       return
     }
 
-    if (microphoneState === MicrophoneState.Open) {
+    if (connectionState === SOCKET_STATES.open) {
+      disconnectFromDeepgram()
       stopMicrophone()
     } else {
-      startMicrophone()
       connectToDeepgram({
         model: 'nova-2',
         interim_results: true,
@@ -209,7 +206,7 @@ const VoiceRecorder: () => JSX.Element = () => {
             <Trash2 className="mr-2" /> Clear
           </Button>
           <Button onClick={toggleMicrophone} className="flex items-center">
-            {microphoneState === MicrophoneState.Open ? (
+            {connectionState === SOCKET_STATES.open ? (
               <>
                 <MicOff className="mr-2" /> Stop
               </>
