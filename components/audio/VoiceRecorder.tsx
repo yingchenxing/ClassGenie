@@ -31,16 +31,23 @@ const VoiceRecorder: () => JSX.Element = () => {
   const { deepgramKey } = useDeepgram()
   const { setSummary } = useProjectEnv()
   const { connection, connectToDeepgram, connectionState, disconnectFromDeepgram } = useDeepgram()
-  const {
-    setupMicrophone,
-    microphone,
-    startMicrophone,
-    stopMicrophone,
-    microphoneState,
-  } = useMicrophone()
+
   const keepAliveInterval = useRef<any>();
 
+
+  const [microphone, setMicrophone] = useState<MediaRecorder | null>(null)
+
   useEffect(() => {
+    const setupMicrophone = async () => {
+      const userMedia = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          noiseSuppression: true,
+          echoCancellation: true,
+        }
+      })
+      const microphone = new MediaRecorder(userMedia)
+      setMicrophone(microphone)
+    }
     setupMicrophone()
   }, [])
 
@@ -74,8 +81,7 @@ const VoiceRecorder: () => JSX.Element = () => {
       console.log('Adding event listeners')
       connection.addListener(LiveTranscriptionEvents.Transcript, onTranscript)
       microphone.addEventListener(MicrophoneEvents.DataAvailable, onData)
-
-      startMicrophone()
+      microphone.start(250)
     }
 
     return () => {
@@ -87,13 +93,13 @@ const VoiceRecorder: () => JSX.Element = () => {
       microphone.removeEventListener(MicrophoneEvents.DataAvailable, onData)
 
     }
-  }, [connectionState])
+  }, [connectionState, microphone])
 
   useEffect(() => {
     if (!connection) return
 
     if (
-      microphoneState !== MicrophoneState.Open &&
+      microphone?.state === 'recording' &&
       connectionState === SOCKET_STATES.open
     ) {
       connection.keepAlive()
@@ -107,7 +113,7 @@ const VoiceRecorder: () => JSX.Element = () => {
     return () => {
       clearInterval(keepAliveInterval.current);
     }
-  }, [microphoneState, connectionState])
+  }, [connectionState])
 
   const toggleMicrophone = () => {
     if (!deepgramKey) {
@@ -117,7 +123,7 @@ const VoiceRecorder: () => JSX.Element = () => {
 
     if (connectionState === SOCKET_STATES.open) {
       disconnectFromDeepgram()
-      stopMicrophone()
+      microphone?.stop()
     } else {
       connectToDeepgram({
         model: 'nova-2',
