@@ -108,7 +108,7 @@ export default function MarkdownEditor() {
   }
 
   return (
-    <ScrollArea className="border rounded-lg h-full w-full flex flex-col">
+    <div className="border rounded-lg h-full w-full flex flex-col">
       <div className="border-b p-2 flex gap-1 flex-wrap items-center">
         <div className="flex gap-1">
           <ToolbarButton
@@ -194,7 +194,10 @@ export default function MarkdownEditor() {
           onClick={handleExport}
         />
       </div>
-      <EditorContent editor={editor} />
-    </ScrollArea>
+
+      <ScrollArea className="h-full w-full flex flex-col">
+        <EditorContent editor={editor} />
+      </ScrollArea>
+    </div>
   )
 }

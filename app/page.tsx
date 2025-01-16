@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/sidebar"
 import { Settings } from "lucide-react"
 import { useState } from "react"
-import MarkdownEditor from "@/components/panel/markdownEditor"
+import { ContentTabs } from "@/components/panel/content-tabs"
 
 export default function Page() {
   const [settingsOpen, setSettingsOpen] = useState(false)
@@ -55,15 +55,12 @@ export default function Page() {
         </header>
         <ResizablePanelGroup className="flex flex-1 flex-col gap-1 p-4 pt-0" direction="horizontal">
           <ResizablePanel>
-
             <VoiceRecorder />
           </ResizablePanel>
 
-          <ResizableHandle className="w-0" />
+          <ResizableHandle className="w-2 bg-transparent" />
           <ResizablePanel>
-            {/* <div className="h-full w-full rounded-xl bg-muted/50" /> */}
-
-            <MarkdownEditor />
+            <ContentTabs />
           </ResizablePanel>
         </ResizablePanelGroup>
 
