@@ -1,9 +1,9 @@
-"use client"
+'use client'
 
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import MarkdownEditor from "./markdownEditor"
-import { FileText, Code2, FileIcon } from "lucide-react"
-
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
+import MarkdownEditor from './markdownEditor'
+import { FileText, Code2, FileIcon } from 'lucide-react'
+import { FileInput } from './fileInput'
 export function ContentTabs() {
   return (
     <Tabs defaultValue="notes" className="h-full flex flex-col">
@@ -21,10 +21,8 @@ export function ContentTabs() {
         <MarkdownEditor />
       </TabsContent>
       <TabsContent value="code" className="mt-4 overflow-auto flex-1">
-        <div className="h-full border rounded-lg p-4">
-          File upload coming soon...
-        </div>
+        <FileInput />
       </TabsContent>
     </Tabs>
   )
-} 
+}

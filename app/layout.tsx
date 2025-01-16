@@ -4,6 +4,7 @@ import './globals.css'
 import { ProjectEnvContextProvider } from './context/ProjectEnvContextProvider'
 import { OpenAIKeyProvider } from './context/OpenAIContextProvider'
 import { DeepgramContextProvider } from './context/DeepgramContextProvider'
+import { Toaster } from '@/components/ui/toaster'
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -34,6 +35,7 @@ export default function RootLayout({
           <OpenAIKeyProvider>
             <DeepgramContextProvider>
               {children}
+              <Toaster />
             </DeepgramContextProvider>
           </OpenAIKeyProvider>
         </ProjectEnvContextProvider>
