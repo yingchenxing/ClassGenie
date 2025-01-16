@@ -24,13 +24,25 @@ interface ProjectEnvContextProviderProps {
 const ProjectEnvContextProvider: FunctionComponent<
   ProjectEnvContextProviderProps
 > = ({ children }) => {
-  const [summary, setSummary] = useState<string>('')
+  const [summary, setSummary] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('projectSummary') || ''
+    }
+    return ''
+  })
+
+  const handleSetSummary = (content: string) => {
+    setSummary(content)
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('projectSummary', content)
+    }
+  }
 
   return (
     <ProjectEnvContext.Provider
       value={{
         summary,
-        setSummary,
+        setSummary: handleSetSummary,
       }}>
       {children}
     </ProjectEnvContext.Provider>
