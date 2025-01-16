@@ -14,17 +14,26 @@ import { generateSummary } from '@/apis/analyzeService'
 import { useOpenAIKey } from '@/app/context/OpenAIContextProvider'
 import { useProjectEnv } from '@/app/context/ProjectEnvContextProvider'
 import { SettingsDialog } from '@/components/nav/settings-dialog'
+import { toast } from '@/hooks/use-toast'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog'
 
 const VoiceRecorder: () => JSX.Element = () => {
   const [transcriptions, setTranscriptions] = useState<
     { text: string; timestamp: string }[]
   >([])
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
 
   const { openaiKey } = useOpenAIKey()
   const { deepgramKey } = useDeepgram()
-  const { setSummary } = useProjectEnv()
+  const { summary, setSummary } = useProjectEnv()
   const { connection, connectToDeepgram, connectionState, disconnectFromDeepgram } = useDeepgram()
 
   const keepAliveInterval = useRef<any>();
@@ -135,10 +144,27 @@ const VoiceRecorder: () => JSX.Element = () => {
   }
 
   const handleSummarize = async () => {
+    if (summary && summary.trim() !== '') {
+      console.log('Summary:', summary)
+      setConfirmDialogOpen(true)
+      return
+    }
+    await generateSummaryWithToast()
+  }
+
+  const generateSummaryWithToast = async () => {
     console.log('Summarizing transcriptions:', transcriptions)
-    const summary = await generateSummary(transcriptions, openaiKey)
-    setSummary(summary)
-    console.log('Summary:', summary)
+    toast({
+      title: "Generating Summary",
+      description: "Please wait while we analyze your transcription...",
+    })
+    const newSummary = await generateSummary(transcriptions, openaiKey)
+    setSummary(newSummary)
+    toast({
+      title: "Summary Generated",
+      description: "Your transcription has been summarized successfully",
+    })
+    console.log('Summary:', newSummary)
   }
 
   const handleExport = () => {
@@ -236,6 +262,27 @@ const VoiceRecorder: () => JSX.Element = () => {
         </div>
       </div>
       <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
+      <Dialog open={confirmDialogOpen} onOpenChange={setConfirmDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Replace Existing Content?</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            There is existing content in the editor. Generating a new summary will replace it. Do you want to continue?
+          </p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConfirmDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={async () => {
+              setConfirmDialogOpen(false)
+              await generateSummaryWithToast()
+            }}>
+              Continue
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   )
 }
