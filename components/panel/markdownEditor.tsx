@@ -61,7 +61,7 @@ function ToolbarButton({
 }
 
 export default function MarkdownEditor() {
-  const { summary } = useProjectEnv()
+  const { summary, setSummary } = useProjectEnv()
 
   const editor = useEditor({
     extensions: [
@@ -79,11 +79,20 @@ export default function MarkdownEditor() {
       },
     },
     content: summary ? md.render(summary) : '',
+    onUpdate: ({ editor }) => {
+      const turndown = new TurndownService()
+      const markdown = turndown.turndown(editor.getHTML())
+      setSummary(markdown)
+    },
   })
 
   useEffect(() => {
     if (editor && summary) {
+      const { from, to } = editor.state.selection
+
       editor.commands.setContent(md.render(summary))
+
+      editor.commands.setTextSelection({ from, to })
     }
   }, [editor, summary])
 
