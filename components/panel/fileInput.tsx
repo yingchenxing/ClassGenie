@@ -76,13 +76,13 @@ export function FileInput() {
         className={`
           flex-1 border-2 border-dashed rounded-lg
           flex items-center justify-center
-          min-h-[200px] mb-4 p-4
+          min-h-[150px] mb-4 p-4
           ${isDragActive ? 'border-primary bg-primary/10' : 'border-muted'}
         `}>
         <input {...getInputProps()} />
         <div className="text-center">
-          <Upload className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-          <p className="text-sm text-muted-foreground">
+          <Upload className="w-10 h-10 mx-auto mb-3 text-muted-foreground" />
+          <p className="text-base text-muted-foreground">
             {isDragActive
               ? 'Drop the files here...'
               : 'Drag & drop files here, or click to select files'}
@@ -121,7 +121,7 @@ export function FileInput() {
             </div>
           ))}
           {files.length === 0 && (
-            <p className="text-sm text-muted-foreground text-center py-4">
+            <p className="text-base text-muted-foreground text-center py-4">
               No files uploaded
             </p>
           )}
