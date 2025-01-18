@@ -37,3 +37,8 @@ next-env.d.ts
 
 # local env files
 .env
+
+# firebase
+/.firebase/
+firebase-debug.log
+.firebase*.cache
