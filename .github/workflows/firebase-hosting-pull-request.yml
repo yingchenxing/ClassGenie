@@ -5,11 +5,9 @@ name: Deploy to Firebase Hosting
 on:
   push:
     branches:
-      - main
       - cloud
   pull_request:
     branches:
-      - main
       - cloud
 
 permissions:
@@ -29,3 +27,5 @@ jobs:
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_CLASSGENIE_EE009 }}
           projectId: classgenie-ee009
           channelId: live
+        env:
+          FIREBASE_CLI_EXPERIMENTS: webframeworks
