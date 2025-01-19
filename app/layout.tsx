@@ -1,10 +1,12 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 import './globals.css'
-import { ProjectEnvContextProvider } from './context/ProjectEnvContextProvider'
-import { OpenAIKeyProvider } from './context/OpenAIContextProvider'
-import { DeepgramContextProvider } from './context/DeepgramContextProvider'
+import { ProjectEnvContextProvider } from '../contexts/ProjectEnvContextProvider'
+import { OpenAIKeyProvider } from '../contexts/OpenAIContextProvider'
+import { DeepgramContextProvider } from '../contexts/DeepgramContextProvider'
 import { Toaster } from '@/components/ui/toaster'
+import { AuthProvider } from '@/contexts/auth-context'
+import { ProtectedRoute } from '@/components/auth/protected-route'
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -31,14 +33,18 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <ProjectEnvContextProvider>
-          <OpenAIKeyProvider>
-            <DeepgramContextProvider>
-              {children}
-              <Toaster />
-            </DeepgramContextProvider>
-          </OpenAIKeyProvider>
-        </ProjectEnvContextProvider>
+        <AuthProvider>
+          <ProjectEnvContextProvider>
+            <OpenAIKeyProvider>
+              <DeepgramContextProvider>
+                <ProtectedRoute>
+                  {children}
+                </ProtectedRoute>
+                <Toaster />
+              </DeepgramContextProvider>
+            </OpenAIKeyProvider>
+          </ProjectEnvContextProvider>
+        </AuthProvider>
       </body>
     </html>
   )

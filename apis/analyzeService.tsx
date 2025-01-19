@@ -1,6 +1,3 @@
-import { useOpenAIKey } from '@/app/context/OpenAIContextProvider'
-import { useProjectEnv } from '@/app/context/ProjectEnvContextProvider'
-
 interface Transcription {
   text: string
   timestamp: string

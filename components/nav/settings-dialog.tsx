@@ -11,8 +11,8 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { ExternalLink } from 'lucide-react'
-import { useOpenAIKey } from '@/app/context/OpenAIContextProvider'
-import { useDeepgram } from '@/app/context/DeepgramContextProvider'
+import { useOpenAIKey } from '@/contexts/OpenAIContextProvider'
+import { useDeepgram } from '@/contexts/DeepgramContextProvider'
 
 export function SettingsDialog({
   open,

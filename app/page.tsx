@@ -26,7 +26,7 @@ export default function Page() {
 
   return (
     <SidebarProvider>
-      {/* <AppSidebar /> */}
+      <AppSidebar />
       <SidebarInset className="h-[95vh] overflow-y-hidden">
         <header className="flex h-16 shrink-0 items-center justify-between">
           <div className="flex items-center gap-2 px-4">

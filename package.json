@@ -35,6 +35,7 @@
     "clsx": "^2.1.1",
     "docx": "^9.1.1",
     "docx-loader": "^1.0.4",
+    "firebase": "^11.2.0",
     "fs": "^0.0.1-security",
     "langchain": "^0.3.11",
     "lowlight": "^3.3.0",

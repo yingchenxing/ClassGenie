@@ -6,13 +6,13 @@ import {
   LiveTranscriptionEvent,
   LiveTranscriptionEvents,
   useDeepgram,
-} from '@/app/context/DeepgramContextProvider'
+} from '@/contexts/DeepgramContextProvider'
 import { Button } from '@/components/ui/button'
 import { Mic, MicOff, Sparkles, Download, Trash2 } from 'lucide-react'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { generateSummary } from '@/apis/analyzeService'
-import { useOpenAIKey } from '@/app/context/OpenAIContextProvider'
-import { useProjectEnv } from '@/app/context/ProjectEnvContextProvider'
+import { useOpenAIKey } from '@/contexts/OpenAIContextProvider'
+import { useProjectEnv } from '@/contexts/ProjectEnvContextProvider'
 import { SettingsDialog } from '@/components/nav/settings-dialog'
 import { toast } from '@/hooks/use-toast'
 import {
