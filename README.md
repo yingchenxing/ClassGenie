@@ -1,6 +1,6 @@
 # AI Voice Recorder & Summarizer
 
-Are you tired of taking notes during lengthy lectures or endless meetings? This Next.js application provides real-time voice transcription and AI-powered summarization, helping you focus on the conversation while automatically capturing and organizing the key points. Try it out at [record.11chen.link](https://record.11chen.link/)
+Are you tired of taking notes during lengthy lectures or endless meetings? This Next.js application provides real-time voice transcription and AI-powered summarization, helping you focus on the conversation while automatically capturing and organizing the key points. Try it out at [lazystu.com](https://lazystu.com/)
 
 ![image](https://github.com/user-attachments/assets/f9674a64-6e3b-4e22-b207-6ac4b1a61517)
 
